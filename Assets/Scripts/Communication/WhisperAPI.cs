@@ -8,6 +8,7 @@ public class WhisperAPI : MonoBehaviour
     // This class provides functionality to interact with the Whisper API for audio transcription.
     // It sends audio data to the API and retrieves the transcribed text. 
     // The API key and URL should be set before calling the TranscribeAudio method.
+    // apiKey is a secrete key from OpenAI so add it here from OpenAI.
     private string apiKey = "";
     private string apiUrl = "https://api.openai.com/v1/audio/transcriptions";
 
