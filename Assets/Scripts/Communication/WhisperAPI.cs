@@ -12,9 +12,6 @@ public class WhisperAPI : MonoBehaviour
     private string apiKey = "";
     private string apiUrl = "https://api.openai.com/v1/audio/transcriptions";
 
-    // Sets the API key for authentication.
-    // This should be called before making any API requests.
-
     public IEnumerator TranscribeAudio(byte[] audioData, System.Action<string> callback)
     {
         // Check if the API key is set.
