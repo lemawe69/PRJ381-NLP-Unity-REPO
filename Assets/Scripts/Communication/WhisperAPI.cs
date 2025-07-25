@@ -9,7 +9,7 @@ public class WhisperAPI : MonoBehaviour
     // It sends audio data to the API and retrieves the transcribed text. 
     // The API key and URL should be set before calling the TranscribeAudio method.
     // apiKey is a secrete key from OpenAI so add it here from OpenAI.
-    private string apiKey = "";
+    [SerializeField]private string apiKey = "";
     private string apiUrl = "https://api.openai.com/v1/audio/transcriptions";
 
     public IEnumerator TranscribeAudio(byte[] audioData, System.Action<string> callback)
@@ -39,6 +39,7 @@ public class WhisperAPI : MonoBehaviour
         // The request is sent as a POST request with the form data.
         using (UnityWebRequest www = UnityWebRequest.Post(apiUrl, form))
         {
+            www.timeout = 10; // 10-second timeout
             www.SetRequestHeader("Authorization", "Bearer " + apiKey);
             yield return www.SendWebRequest();
 

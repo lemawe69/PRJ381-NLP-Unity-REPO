@@ -1,35 +1,108 @@
 using UnityEngine;
+using System.Collections;
+using UnityEngine.XR;
+using System.Collections.Generic;
 
 public class AudioRecorder : MonoBehaviour
 {
-    // This script allows for recording audio using the microphone.
-    // It starts recording when StartRecording is called and stops when StopRecording is called.
+    public AudioSource audioFeedback;
+    public WhisperAPI whisperAPI;
     
     private AudioClip recording;
     private bool isRecording = false;
-    private const int RECORDING_LENGTH = 10; // Max 10 seconds
+    private InputDevice leftController;
+    private bool buttonPressedLastFrame = false;
 
-    // Starts recording audio from the microphone.
-    public void StartRecording()
+    void Start()
     {
-        // If already recording, do nothing.
-        if (isRecording) return;
-        // Start recording audio from the default microphone.
-        recording = Microphone.Start(null, false, RECORDING_LENGTH, 44100);
-        isRecording = true;
+        InitializeController();
     }
 
-    // Stops the recording and returns the recorded AudioClip.
-    public AudioClip StopRecording()
+    void Update()
     {
-        // If not recording, return null.
-        if (!isRecording) return null;
-        // Stop the microphone and get the recorded audio clip.
+        // Try to initialize if not valid
+        if (!leftController.isValid)
+        {
+            InitializeController();
+            if (!leftController.isValid) return;
+        }
+
+        // Check for button press
+        if (leftController.TryGetFeatureValue(CommonUsages.primaryButton, out bool pressed) && pressed)
+        {
+            if (!buttonPressedLastFrame && !isRecording)
+            {
+                StartRecording();
+            }
+            buttonPressedLastFrame = true;
+        }
+        else if (buttonPressedLastFrame)
+        {
+            buttonPressedLastFrame = false;
+            if (isRecording)
+            {
+                StopRecording();
+            }
+        }
+    }
+
+    void InitializeController()
+    {
+        var devices = new List<InputDevice>();
+        InputDevices.GetDevicesAtXRNode(XRNode.LeftHand, devices);
+        
+        if (devices.Count > 0)
+        {
+            leftController = devices[0];
+            Debug.Log($"Found controller: {leftController.name}");
+        }
+        else
+        {
+            Debug.LogWarning("Left controller not found!");
+        }
+    }
+
+    void StartRecording()
+    {
+        Debug.Log("Starting recording...");
+        recording = Microphone.Start(null, false, 10, 44100);
+        isRecording = true;
+        if (audioFeedback != null) audioFeedback.Play();
+    }
+
+    void StopRecording()
+    {
+        Debug.Log("Stopping recording...");
         Microphone.End(null);
         isRecording = false;
-        return recording;
+        StartCoroutine(ProcessVoiceCommand());
     }
 
-    // Checks if the recorder is currently recording.
-    public bool IsRecording() => isRecording;
+    IEnumerator ProcessVoiceCommand()
+    {
+        if (recording == null)
+        {
+            Debug.LogWarning("No recording to process");
+            yield break;
+        }
+
+        byte[] audioData = WavConverter.ConvertToWav(recording);
+        
+        if (audioData == null || audioData.Length == 0)
+        {
+            Debug.LogWarning("No audio data recorded");
+            yield break;
+        }
+
+        string transcript = null;
+        yield return StartCoroutine(whisperAPI.TranscribeAudio(audioData, (result) => {
+            transcript = result;
+        }));
+
+        if (!string.IsNullOrEmpty(transcript))
+        {
+            Debug.Log($"Transcribed: {transcript}");
+            CommandParser.ExecuteCommand(transcript);
+        }
+    }
 }
