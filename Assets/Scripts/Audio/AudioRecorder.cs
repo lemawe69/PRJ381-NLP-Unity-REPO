@@ -1,44 +1,78 @@
 using UnityEngine;
-//using UnityEngine.Networking;
 using System.Collections;
 using UnityEngine.XR;
-//using System.Linq;
-using UnityEngine.InputSystem.XR;
-using UnityEngine.XR.Interaction.Toolkit;
+using System.Collections.Generic;
 
 public class AudioRecorder : MonoBehaviour
 {
-    public XRController leftController;
     public AudioSource audioFeedback;
-    public WhisperAPI whisperAPI;  // Reference to your WhisperAPI component
+    public WhisperAPI whisperAPI;
     
     private AudioClip recording;
     private bool isRecording = false;
+    private InputDevice leftController;
+    private bool buttonPressedLastFrame = false;
 
-    private float lastCommandTime;
-    public float commandCooldown = 1.5f;
-    
+    void Start()
+    {
+        InitializeController();
+    }
+
     void Update()
     {
-        if (leftController.inputDevice.TryGetFeatureValue(CommonUsages.primaryButton, out bool pressed) && pressed)
+        // Try to initialize if not valid
+        if (!leftController.isValid)
         {
-            if (!isRecording) StartRecording();
+            InitializeController();
+            if (!leftController.isValid) return;
         }
-        else if (isRecording)
+
+        // Check for button press
+        if (leftController.TryGetFeatureValue(CommonUsages.primaryButton, out bool pressed) && pressed)
         {
-            StopRecording();
+            if (!buttonPressedLastFrame && !isRecording)
+            {
+                StartRecording();
+            }
+            buttonPressedLastFrame = true;
+        }
+        else if (buttonPressedLastFrame)
+        {
+            buttonPressedLastFrame = false;
+            if (isRecording)
+            {
+                StopRecording();
+            }
+        }
+    }
+
+    void InitializeController()
+    {
+        var devices = new List<InputDevice>();
+        InputDevices.GetDevicesAtXRNode(XRNode.LeftHand, devices);
+        
+        if (devices.Count > 0)
+        {
+            leftController = devices[0];
+            Debug.Log($"Found controller: {leftController.name}");
+        }
+        else
+        {
+            Debug.LogWarning("Left controller not found!");
         }
     }
 
     void StartRecording()
     {
+        Debug.Log("Starting recording...");
         recording = Microphone.Start(null, false, 10, 44100);
         isRecording = true;
-        audioFeedback.Play();  // Audio feedback
+        if (audioFeedback != null) audioFeedback.Play();
     }
 
     void StopRecording()
     {
+        Debug.Log("Stopping recording...");
         Microphone.End(null);
         isRecording = false;
         StartCoroutine(ProcessVoiceCommand());
@@ -46,14 +80,22 @@ public class AudioRecorder : MonoBehaviour
 
     IEnumerator ProcessVoiceCommand()
     {
-        if (Time.time - lastCommandTime < commandCooldown) yield break;
+        if (recording == null)
+        {
+            Debug.LogWarning("No recording to process");
+            yield break;
+        }
 
         byte[] audioData = WavConverter.ConvertToWav(recording);
-        string transcript = null;
-
-        // Use the WhisperAPI component directly
-        yield return StartCoroutine(whisperAPI.TranscribeAudio(audioData, (result) =>
+        
+        if (audioData == null || audioData.Length == 0)
         {
+            Debug.LogWarning("No audio data recorded");
+            yield break;
+        }
+
+        string transcript = null;
+        yield return StartCoroutine(whisperAPI.TranscribeAudio(audioData, (result) => {
             transcript = result;
         }));
 
@@ -62,7 +104,5 @@ public class AudioRecorder : MonoBehaviour
             Debug.Log($"Transcribed: {transcript}");
             CommandParser.ExecuteCommand(transcript);
         }
-
-        lastCommandTime = Time.time;
     }
 }
