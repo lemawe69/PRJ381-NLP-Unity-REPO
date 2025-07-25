@@ -1,35 +1,68 @@
 using UnityEngine;
+//using UnityEngine.Networking;
+using System.Collections;
+using UnityEngine.XR;
+//using System.Linq;
+using UnityEngine.InputSystem.XR;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class AudioRecorder : MonoBehaviour
 {
-    // This script allows for recording audio using the microphone.
-    // It starts recording when StartRecording is called and stops when StopRecording is called.
+    public XRController leftController;
+    public AudioSource audioFeedback;
+    public WhisperAPI whisperAPI;  // Reference to your WhisperAPI component
     
     private AudioClip recording;
     private bool isRecording = false;
-    private const int RECORDING_LENGTH = 10; // Max 10 seconds
 
-    // Starts recording audio from the microphone.
-    public void StartRecording()
+    private float lastCommandTime;
+    public float commandCooldown = 1.5f;
+    
+    void Update()
     {
-        // If already recording, do nothing.
-        if (isRecording) return;
-        // Start recording audio from the default microphone.
-        recording = Microphone.Start(null, false, RECORDING_LENGTH, 44100);
-        isRecording = true;
+        if (leftController.inputDevice.TryGetFeatureValue(CommonUsages.primaryButton, out bool pressed) && pressed)
+        {
+            if (!isRecording) StartRecording();
+        }
+        else if (isRecording)
+        {
+            StopRecording();
+        }
     }
 
-    // Stops the recording and returns the recorded AudioClip.
-    public AudioClip StopRecording()
+    void StartRecording()
     {
-        // If not recording, return null.
-        if (!isRecording) return null;
-        // Stop the microphone and get the recorded audio clip.
+        recording = Microphone.Start(null, false, 10, 44100);
+        isRecording = true;
+        audioFeedback.Play();  // Audio feedback
+    }
+
+    void StopRecording()
+    {
         Microphone.End(null);
         isRecording = false;
-        return recording;
+        StartCoroutine(ProcessVoiceCommand());
     }
 
-    // Checks if the recorder is currently recording.
-    public bool IsRecording() => isRecording;
+    IEnumerator ProcessVoiceCommand()
+    {
+        if (Time.time - lastCommandTime < commandCooldown) yield break;
+
+        byte[] audioData = WavConverter.ConvertToWav(recording);
+        string transcript = null;
+
+        // Use the WhisperAPI component directly
+        yield return StartCoroutine(whisperAPI.TranscribeAudio(audioData, (result) =>
+        {
+            transcript = result;
+        }));
+
+        if (!string.IsNullOrEmpty(transcript))
+        {
+            Debug.Log($"Transcribed: {transcript}");
+            CommandParser.ExecuteCommand(transcript);
+        }
+
+        lastCommandTime = Time.time;
+    }
 }
