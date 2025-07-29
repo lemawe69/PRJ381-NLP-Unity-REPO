@@ -8,18 +8,20 @@ class droneController:
     def __init__(self):
         self.tello = Tello()
         self.speed = 20
-        
+       
         self.tello.connect()
-        self.tello.streamon()
+        
+        
+        #self.tello.streamon()
         
         self.stop_event = threading.Event()
         
         self.processes = LifoQueue()
     
-        thread_video = threading.Thread(target=self.show_video)
-        thread_video.start()
+        #thread_video = threading.Thread(target=self.show_video)
+        #thread_video.start()
         
-        self.processes.put(thread_video)
+        #self.processes.put(thread_video)
         
     def clear_process_stack():
         stop_event.set()
@@ -40,9 +42,8 @@ class droneController:
         match(keywords[0]):
             case "move":
                 move(keywords[1:])
-                pass
             case "change":
-                change(keywords[1:})
+                change(keywords[1:])
             case "turn":
                 turn(keywords[1:])
             case _:
@@ -63,29 +64,35 @@ class droneController:
     def move(sub_cmd):
         match(sub_cmd[0]):
             case "left":
-                pass
+                tello.move_left(sub_cmd[1])
             case "right":
-                pass
+                tello.right(sub_cmd[1])
             case "forwards":
-                pass
+                tello.move_forward(sub_cmd[1])
             case "backwards":
-                pass
+                tello.move_back(sub_cmd[1])
             case "up":
-                pass
+                tello.move_up(sub_cmd[1])
             case "down":
-                pass
+                tello.move_down(sub_cmd[1])
+            case _:
+                print('invalid subcommand')
         
     def turn(sub_cmd):
         match(sub_cmd[0]):
             case "left":
-                pass
+                tello.rotate_counter_clockwise(sub_cmd[1]) 
             case "right":
-                pass
+                tello.rotate_clockwise(sub_cmd[1])
+            case _:
+                print('invalid subcommand')
         
     def change(sub_cmd):
         match(sub_cmd[0]):
             case "speed":
-                pass
+                tello.set_speed(sub_cmd[1])
+            case _:
+                print('invalid subcommand')
                 
     def show_video():
         while not stop_event.is_set():
