@@ -90,8 +90,31 @@ public class AudioRecorder : MonoBehaviour
     void StartRecording()
     {
 
+        // Get all available microphones
+        string[] devices = Microphone.devices;
+        Debug.Log("Available microphones:");
+        foreach (string device in devices)
+        {
+            Debug.Log(device);
+        }
+    
+        // Use the first headset microphone (if available)
+        string selectedDevice = null;
+        foreach (string device in devices)
+        {
+            if (device.ToLower().Contains("headset") || 
+                device.ToLower().Contains("earbud") ||
+                device.ToLower().Contains("airpod"))
+            {
+                selectedDevice = device;
+                break;
+            }
+        }
+    
+        // Start recording
         Debug.Log("Starting recording...");
-        recording = Microphone.Start(null, false, 5, 16000);
+        //recording = Microphone.Start(null, false, 5, 16000);
+        recording = Microphone.Start(selectedDevice, false, 5, 16000);
         isRecording = true;
         if (audioFeedback != null) audioFeedback.Play();
     }
