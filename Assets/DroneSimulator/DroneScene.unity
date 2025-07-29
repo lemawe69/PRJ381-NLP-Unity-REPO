@@ -361,6 +361,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: dca6254f647eb1e4ab4d0f01af0c4358, type: 3}
       insertIndex: -1
       addedObject: {fileID: 574939391}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: dca6254f647eb1e4ab4d0f01af0c4358, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 574939396}
   m_SourcePrefab: {fileID: 100100000, guid: dca6254f647eb1e4ab4d0f01af0c4358, type: 3}
 --- !u!1 &574939390 stripped
 GameObject:
@@ -421,6 +424,22 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: dca6254f647eb1e4ab4d0f01af0c4358, type: 3}
   m_PrefabInstance: {fileID: 572739727}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &574939396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 574939390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 102ff56c81097154bbcd7854824d68ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 3
+  liftSpeed: 2
+  rotationSpeed: 60
+  takeOffHeight: 2
 --- !u!1 &844718798
 GameObject:
   m_ObjectHideFlags: 0
