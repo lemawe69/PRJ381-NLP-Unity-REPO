@@ -8,7 +8,7 @@ public static class CommandParser
 
     static CommandParser()
     {
-        tello = GameObject.FindObjectOfType<TelloController>();
+        tello = Object.FindObjectOfType<TelloController>();
     }
 
     public static void ExecuteCommand(string command)
@@ -43,7 +43,12 @@ public static class CommandParser
         // Flip commands
         else if (Regex.IsMatch(command, @"do a front flip|flip forward")) 
             tello.Flip("f");
-        // ... other flip commands
+        else if (Regex.IsMatch(command, @"do a back flip|flip backward")) 
+            tello.Flip("b");
+        else if (Regex.IsMatch(command, @"do a left flip|flip left")) 
+            tello.Flip("l");
+        else if (Regex.IsMatch(command, @"do a right flip|flip right")) 
+            tello.Flip("r");
         
         // Speed control
         else if (TryParseSpeed(command, @"set speed to (\d+)")) return;
