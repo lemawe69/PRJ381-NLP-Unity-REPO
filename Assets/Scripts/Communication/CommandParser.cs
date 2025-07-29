@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using System;
 
 public static class CommandParser 
 {
@@ -8,26 +10,39 @@ public static class CommandParser
 
     static CommandParser()
     {
-        tello = Object.FindObjectOfType<TelloController>();
+        tello = GameObject.FindObjectOfType<TelloController>();
     }
+
+    private static Dictionary<string, Action> commandCache = new Dictionary<string, Action>()
+    {
+        {"take off", () => tello.TakeOff()},
+        {"land", () => tello.Land()},
+        {"emergency stop", () => tello.EmergencyStop()},
+    };
 
     public static void ExecuteCommand(string command)
     {
         if (tello == null) return;
-        
+
         command = command.ToLower().Trim();
         Debug.Log($"Executing: {command}");
 
+        if (commandCache.ContainsKey(command))
+        {
+            commandCache[command].Invoke();
+            return;
+        }
+
         // Handle natural language variations
-        if (Regex.IsMatch(command, @"take off|launch|start|fly")) 
-            tello.TakeOff();
-        
-        else if (Regex.IsMatch(command, @"land|stop|end|come down")) 
-            tello.Land();
-        
-        else if (Regex.IsMatch(command, @"emergency|halt|stop now"))
-            tello.EmergencyStop();
-        
+        // if (Regex.IsMatch(command, @"take off|launch|start|fly"))
+        //     tello.TakeOff();
+
+        // else if (Regex.IsMatch(command, @"land|stop|end|come down"))
+        //     tello.Land();
+
+        // else if (Regex.IsMatch(command, @"emergency|halt|stop now"))
+        //     tello.EmergencyStop();
+
         // Directional commands with distance
         else if (TryParseMovement(command, @"go forward (\d+)", "forward")) return;
         else if (TryParseMovement(command, @"go back(?:ward)? (\d+)", "back")) return;
@@ -35,24 +50,24 @@ public static class CommandParser
         else if (TryParseMovement(command, @"go right (\d+)", "right")) return;
         else if (TryParseMovement(command, @"go up (\d+)", "up")) return;
         else if (TryParseMovement(command, @"go down (\d+)", "down")) return;
-        
+
         // Rotation commands
         else if (TryParseRotation(command, @"turn left (\d+)", "ccw")) return;
         else if (TryParseRotation(command, @"turn right (\d+)", "cw")) return;
-        
+
         // Flip commands
-        else if (Regex.IsMatch(command, @"do a front flip|flip forward")) 
+        else if (Regex.IsMatch(command, @"do a front flip|flip forward"))
             tello.Flip("f");
-        else if (Regex.IsMatch(command, @"do a back flip|flip backward")) 
+        else if (Regex.IsMatch(command, @"do a back flip|flip backward"))
             tello.Flip("b");
-        else if (Regex.IsMatch(command, @"do a left flip|flip left")) 
+        else if (Regex.IsMatch(command, @"do a left flip|flip left"))
             tello.Flip("l");
-        else if (Regex.IsMatch(command, @"do a right flip|flip right")) 
+        else if (Regex.IsMatch(command, @"do a right flip|flip right"))
             tello.Flip("r");
-        
+
         // Speed control
         else if (TryParseSpeed(command, @"set speed to (\d+)")) return;
-        
+
         else Debug.LogWarning($"Unrecognized command: {command}");
     }
 
