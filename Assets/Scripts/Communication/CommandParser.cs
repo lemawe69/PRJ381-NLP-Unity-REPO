@@ -33,15 +33,15 @@ public static class CommandParser
             return;
         }
 
-        // Handle natural language variations
-        // if (Regex.IsMatch(command, @"take off|launch|start|fly"))
-        //     tello.TakeOff();
+        //Handle natural language variations
+        if (Regex.IsMatch(command, @"take off|launch|start|fly"))
+            tello.TakeOff();
 
-        // else if (Regex.IsMatch(command, @"land|stop|end|come down"))
-        //     tello.Land();
+        else if (Regex.IsMatch(command, @"land|stop|end|come down"))
+            tello.Land();
 
-        // else if (Regex.IsMatch(command, @"emergency|halt|stop now"))
-        //     tello.EmergencyStop();
+        else if (Regex.IsMatch(command, @"emergency|halt|stop now"))
+            tello.EmergencyStop();
 
         // Directional commands with distance
         else if (TryParseMovement(command, @"go forward (\d+)", "forward")) return;
