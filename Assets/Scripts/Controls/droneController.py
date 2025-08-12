@@ -5,102 +5,81 @@ import threading
 import time
 
 class droneController:
+    moveSpeed = 20
+    liftSpeed = 2
+    rotationSpeed = 60
+    takeOffHeight = 2
+    tello = None
+    
     def __init__(self):
         self.tello = Tello()
-        self.speed = 20
        
         self.tello.connect()
         
+        print("Drone Connected")
         
-        #self.tello.streamon()
         
-        self.stop_event = threading.Event()
-        
-        self.processes = LifoQueue()
-    
-        #thread_video = threading.Thread(target=self.show_video)
-        #thread_video.start()
-        
-        #self.processes.put(thread_video)
-        
-    def clear_process_stack():
-        stop_event.set()
-        
-        while self.processes:
-            thread = self.processes.get()
-            thread.join()
-            
-    def eject_process():
-        stop_event.set()
-        
-        thread = self.processes.get()
-        thread.join()
-        
-    def execute_command(cmd):   
+    def execute_command(self,cmd):   
         keywords = cmd.split(' ')
         
         match(keywords[0]):
             case "move":
-                move(keywords[1:])
+                self.move(keywords[1:])
             case "change":
-                change(keywords[1:])
+                self.change(keywords[1:])
             case "turn":
-                turn(keywords[1:])
+                self.turn(keywords[1:])
             case _:
                 command = ' '.join(keywords)
                 
                 if(command == "take off"):
-                    tello.takeoff()
+                    self.tello.takeoff()
                 elif(command == "land"):
                     #stop all threads in stack and land
                     self.clear_process_stack()
-                    tello.land()
+                    self.tello.land()
                 elif(command == "stop"):
-                    tello.stop()
+                    self.tello.stop()
                 else:
                     print("Unknown Command")
                     pass     
 
-    def move(sub_cmd):
-        match(sub_cmd[0]):
+    def move(self, sub_cmd):
+        match(self.sub_cmd[0]):
             case "left":
-                tello.move_left(sub_cmd[1])
+                self.tello.move_left(sub_cmd[1])
             case "right":
-                tello.right(sub_cmd[1])
+                self.tello.right(sub_cmd[1])
             case "forwards":
-                tello.move_forward(sub_cmd[1])
+                self.tello.move_forward(sub_cmd[1])
             case "backwards":
-                tello.move_back(sub_cmd[1])
+                self.tello.move_back(sub_cmd[1])
             case "up":
-                tello.move_up(sub_cmd[1])
+                self.tello.move_up(sub_cmd[1])
             case "down":
-                tello.move_down(sub_cmd[1])
+                self.tello.move_down(self.sub_cmd[1])
             case _:
                 print('invalid subcommand')
+        print(f"Drone moving {sub_cmd[0]} by {sub_cmd[1]}cm")
         
-    def turn(sub_cmd):
+    def turn(self, sub_cmd):
         match(sub_cmd[0]):
             case "left":
-                tello.rotate_counter_clockwise(sub_cmd[1]) 
+                self.tello.rotate_counter_clockwise(sub_cmd[1]) 
             case "right":
-                tello.rotate_clockwise(sub_cmd[1])
-            case _:
-                print('invalid subcommand')
-        
-    def change(sub_cmd):
-        match(sub_cmd[0]):
-            case "speed":
-                tello.set_speed(sub_cmd[1])
+                self.tello.rotate_clockwise(sub_cmd[1])
             case _:
                 print('invalid subcommand')
                 
-    def show_video():
-        while not stop_event.is_set():
-            frame = tello.get_frame_read().frame
-            _, buffer = cv2.imencode('.jpg', frame)
-            yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
-            
+        print(f"Drone rotating {sub_cmd[0]} {sub_cmd[1]} degrees");
+        
+    def change(self, sub_cmd):
+        match(sub_cmd[0]):
+            case "speed":
+                self.tello.set_speed(sub_cmd[1])
+            case _:
+                print('invalid subcommand')
+        print(f"Setting drone {sub_cmd[0]} to {sub_cmd[1]}");   
             
         """
             controls:

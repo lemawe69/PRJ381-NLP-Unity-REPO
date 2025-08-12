@@ -10,7 +10,7 @@ public static class WavConverter
     // The AudioClip must be in PCM format with 16-bit samples.
     public static byte[] ConvertToWav(AudioClip clip)
     {
-        const int targetSampleRate = 16000;
+        const int targetSampleRate = 64000;
 
         using (MemoryStream stream = new MemoryStream())
         {
