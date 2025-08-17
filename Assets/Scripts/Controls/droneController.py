@@ -50,7 +50,7 @@ class droneController:
                 self.tello.move_left(sub_cmd[1])
             case "right":
                 self.tello.right(sub_cmd[1])
-            case "forwards":
+            case "forward":
                 self.tello.move_forward(sub_cmd[1])
             case "backwards":
                 self.tello.move_back(sub_cmd[1])
@@ -59,7 +59,7 @@ class droneController:
             case "down":
                 self.tello.move_down(self.sub_cmd[1])
             case _:
-                print('invalid subcommand')
+                print('d')
         print(f"Drone moving {sub_cmd[0]} by {sub_cmd[1]}cm")
         
     def turn(self, sub_cmd):
