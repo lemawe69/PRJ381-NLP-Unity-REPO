@@ -5,23 +5,20 @@ using Newtonsoft.Json.Linq;
 
 public class WhisperAPI : MonoBehaviour
 {
-    // This class provides functionality to interact with the Whisper API for audio transcription.
-    // It sends audio data to the API and retrieves the transcribed text. 
-    // The API key and URL should be set before calling the TranscribeAudio method.
-    // apiKey is a secrete key from OpenAI so add it here from OpenAI.
-    [SerializeField]private string apiKey = "";
+    [SerializeField] private string apiKey = "";
     private string apiUrl = "https://api.openai.com/v1/audio/transcriptions";
+
+    // Common drone vocabulary prompt (helps Whisper bias towards these commands)
+    private string commandPrompt = "Drone control commands include: take off, land, emergency stop, go forward, go back, go left, go right, go up, go down, turn left, turn right, set speed, flip forward, flip back, flip left, flip right";
 
     public IEnumerator TranscribeAudio(byte[] audioData, System.Action<string> callback)
     {
-        // Check if the API key is set.
         if (string.IsNullOrEmpty(apiKey))
         {
             Debug.LogError("API Key is not set.");
             callback?.Invoke(null);
             yield break;
         }
-        // Validate the audio data before sending it to the API.
         if (audioData == null || audioData.Length == 0)
         {
             Debug.LogError("Audio data is null or empty.");
@@ -29,15 +26,11 @@ public class WhisperAPI : MonoBehaviour
             yield break;
         }
 
-        //
-
-        //
-
-        // Prepare the form data for the API request.
-        // The audio data is sent as a binary file with the name "file".
         WWWForm form = new WWWForm();
         form.AddBinaryData("file", audioData, "audio.wav", "audio/wav");
         form.AddField("model", "whisper-1");
+        form.AddField("temperature", "0"); // deterministic transcription
+        form.AddField("prompt", commandPrompt); // bias Whisper towards drone commands
 
         int retryCount = 0;
         float initialDelay = 0.5f;
@@ -47,7 +40,7 @@ public class WhisperAPI : MonoBehaviour
         {
             using (UnityWebRequest www = UnityWebRequest.Post(apiUrl, form))
             {
-                www.timeout = 20; // 15-second timeout
+                www.timeout = 20;
                 www.SetRequestHeader("Authorization", "Bearer " + apiKey);
                 yield return www.SendWebRequest();
 
@@ -55,15 +48,18 @@ public class WhisperAPI : MonoBehaviour
                 {
                     JObject json = JObject.Parse(www.downloadHandler.text);
                     string transcript = json["text"]?.ToString()?.Trim();
+
+                    // ?? Normalize transcription before passing to CommandParser
+                    transcript = NormalizeCommand(transcript);
+
+                    Debug.Log($"Whisper Transcription: {transcript}");
                     callback?.Invoke(transcript);
-                    yield break; // Exit the coroutine on success
+                    yield break;
                 }
-                else if (www.responseCode == 429) // Too Many Requests
+                else if (www.responseCode == 429) // Rate limited
                 {
-
                     float delay = Mathf.Min(initialDelay * Mathf.Pow(2, retryCount), maxDelay);
-                    delay += Random.Range(0f, 1f); // Add some jitter
-
+                    delay += Random.Range(0f, 1f);
                     Debug.LogWarning($"Rate limit exceeded. Retrying in {delay} seconds...");
                     yield return new WaitForSeconds(delay);
                     retryCount++;
@@ -72,16 +68,34 @@ public class WhisperAPI : MonoBehaviour
                 {
                     Debug.LogError($"API Error: {www.error}");
                     callback?.Invoke(null);
-                    yield break; // Exit the coroutine on error
+                    yield break;
                 }
             }
         }
-        
+
         Debug.LogError("Max retries reached. Transcription failed.");
         callback?.Invoke(null);
+    }
 
-        // Create a UnityWebRequest to send the audio data to the Whisper API.
-        // The request is sent as a POST request with the form data.
 
+    private string NormalizeCommand(string input)
+    {
+        if (string.IsNullOrEmpty(input)) return "";
+
+        string cmd = input.ToLower().Trim();
+
+        // Common variations ? normalize
+        cmd = cmd.Replace("takeoff", "take off");
+        cmd = cmd.Replace("lift off", "take off");
+        cmd = cmd.Replace("fly up", "go up");
+        cmd = cmd.Replace("fly down", "go down");
+        cmd = cmd.Replace("fly forward", "go forward");
+        cmd = cmd.Replace("fly back", "go back");
+        cmd = cmd.Replace("fly left", "go left");
+        cmd = cmd.Replace("fly right", "go right");
+        cmd = cmd.Replace("stop now", "emergency");
+        cmd = cmd.Replace("halt", "emergency");
+
+        return cmd;
     }
 }

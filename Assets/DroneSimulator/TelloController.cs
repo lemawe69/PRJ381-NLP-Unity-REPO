@@ -7,6 +7,7 @@ public class TelloController : MonoBehaviour
     public float liftSpeed = 2f;
     public float rotationSpeed = 60f;
     public float takeOffHeight = 2f;
+    public int defaultMoveDistance = 100;
 
     private bool isTakingOff = false;
     private bool isLanding = false;
