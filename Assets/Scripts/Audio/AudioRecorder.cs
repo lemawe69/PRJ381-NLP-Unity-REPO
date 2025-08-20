@@ -114,7 +114,7 @@ public class AudioRecorder : MonoBehaviour
         // Start recording
         Debug.Log("Starting recording...");
         //recording = Microphone.Start(null, false, 5, 16000);
-        recording = Microphone.Start(selectedDevice, false, 10, 32000);
+        recording = Microphone.Start(selectedDevice, false, 10, 44100);
         isRecording = true;
         if (audioFeedback != null) audioFeedback.Play();
     }

@@ -147,7 +147,7 @@ Transform:
   m_GameObject: {fileID: 595358782}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.096}
+  m_LocalPosition: {x: 0, y: 0, z: -0.148}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -489,7 +489,7 @@ Transform:
   m_GameObject: {fileID: 1134838345}
   serializedVersion: 2
   m_LocalRotation: {x: -0.059694763, y: 0.93534845, z: -0.29119256, w: -0.19174671}
-  m_LocalPosition: {x: 9.3, y: 18.5, z: 25.5}
+  m_LocalPosition: {x: 2.3, y: 6.2, z: 9.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -537,7 +537,7 @@ Transform:
   m_GameObject: {fileID: 1350444984}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.178, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -714,6 +714,18 @@ PrefabInstance:
     - target: {fileID: 4814140183114437194, guid: be7756a5489231b489c8a4b1bd73b934, type: 3}
       propertyPath: m_Name
       value: drone_textured_mesh
+      objectReference: {fileID: 0}
+    - target: {fileID: 6147826009795423660, guid: be7756a5489231b489c8a4b1bd73b934, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6147826009795423660, guid: be7756a5489231b489c8a4b1bd73b934, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6147826009795423660, guid: be7756a5489231b489c8a4b1bd73b934, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 6147826009795423660, guid: be7756a5489231b489c8a4b1bd73b934, type: 3}
       propertyPath: m_LocalPosition.x
