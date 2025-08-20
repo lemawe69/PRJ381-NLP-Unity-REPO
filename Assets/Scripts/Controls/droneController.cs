@@ -52,6 +52,25 @@ public class droneController
         else if (TryParseMovement(command, @"go up (\d+)", "up")) return;
         else if (TryParseMovement(command, @"go down (\d+)", "down")) return;
 
+        // Rotation commands
+        else if (TryParseRotation(command, @"turn left (\d+)", "ccw")) return;
+        else if (TryParseRotation(command, @"turn right (\d+)", "cw")) return;
+
+        // Flip commands
+        else if (Regex.IsMatch(command, @"do a front flip|flip forward"))
+            tello.SendCommand("flip f");
+        else if (Regex.IsMatch(command, @"do a back flip|flip backward"))
+            tello.Flip("flip b");
+        else if (Regex.IsMatch(command, @"do a left flip|flip left"))
+            tello.Flip("flip l");
+        else if (Regex.IsMatch(command, @"do a right flip|flip right"))
+            tello.Flip("flip r");
+
+        // Speed control
+        else if (TryParseSpeed(command, @"set speed to (\d+)")) return;
+
+        else Debug.LogWarning($"Unrecognized command: {command}");
+
 
     }
 
@@ -61,59 +80,40 @@ public class droneController
         Match match = Regex.Match(command, pattern);
         if (match.Success && int.TryParse(match.Groups[1].Value, out int distance))
         {
-            tello.
+            var clamped_distance = Mathf.Clamp(distance, 20, 500);
 
+            tello.SendCommand($"{command} {clamped_distance}");
 
-            tello.Move(action, Mathf.Clamp(distance, 20, 500));
             return true;
         }
         return false;
     }
 
-    public void move(string sub_cmd)
-	{
-		string command = sub_cmd[0] + " " + sub_cmd[1];
 
-		try
-		{
-			tello.SendCommand(command)
-
-		} catch (Exception ex)
-		{
-            //invalid subcommand
-        }
-    }
-
-
-
-    public void turn(string sub_cmd)
+    private static bool TryParseRotation(string command, string pattern, string direction)
     {
-		switch(sub_cmd[0])
-		{
-			case "left" {
-					tello.SendCommand("ccw " + sub_cmd[1]);
-                    break;
-				}
-			case "right" {
-                    tello.SendCommand("cw " + sub_cmd[1]);
-                    break;
-				}
-			default {
-					break;
-				}
-		}
+        Match match = Regex.Match(command, pattern);
+        if (match.Success && int.TryParse(match.Groups[1].Value, out int degrees))
+        {
+            var clamped_angle = Mathf.Clamp(degrees, 1, 360)
+
+            tello.SendCommand($"{command} {clamped_angle}");
+            
+            return true;
+        }
+        return false;
     }
 
-    public void change(string sub_cmd)
-	{
-		try
-		{
-			var command = sub_cmd[0] + " " + sub_cmd[1];
+    private static bool TryParseSpeed(string command, string pattern)
+    {
+        Match match = Regex.Match(command, pattern);
+        if (match.Success && int.TryParse(match.Groups[1].Value, out int speed))
+        {
+            var clamped_speed = Mathf.Clamp(speed, 10, 100)
 
-			tello.SendCommand(command);
-        } catch(Exception ex)
-		{
-			//
-		}
-	}
+            tello.SendCommand($"speed {clamped_speed}")
+            return true;
+        }
+        return false;
+    }
 }
