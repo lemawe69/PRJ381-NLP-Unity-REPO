@@ -66,7 +66,7 @@ MonoBehaviour:
   lateLatchingDebug: 0
   optimizeMultiviewRenderRegions: 0
   multiviewRenderRegionsOptimizationMode: 0
-  m_hasMigratedMultiviewRenderRegions: 0
+  m_hasMigratedMultiviewRenderRegions: 1
   spacewarpMotionVectorTextureFormat: 0
 --- !u!114 &-8405175198330689009
 MonoBehaviour:
@@ -183,24 +183,24 @@ MonoBehaviour:
   m_Name: Android
   m_EditorClassIdentifier: 
   features:
-  - {fileID: -5774969755644585626}
-  - {fileID: -2942779103016901099}
-  - {fileID: 8331095843458802196}
-  - {fileID: 5205957318444212233}
-  - {fileID: -2162714983677160128}
-  - {fileID: 1794706902878635245}
-  - {fileID: -1059286264280417942}
-  - {fileID: 5120986147292854855}
-  - {fileID: -8470629870228600295}
-  - {fileID: -1412108965672901359}
-  - {fileID: -8063081431143138883}
-  - {fileID: 5215932823397312206}
-  - {fileID: -8595161340660153634}
-  - {fileID: -3239139250437500625}
-  - {fileID: 8902431264970266654}
-  - {fileID: -7634468629655829706}
-  - {fileID: -8405175198330689009}
-  - {fileID: 2791453519660273955}
+  - {fileID: 8502145074467698719}
+  - {fileID: -4648392268014645465}
+  - {fileID: -4758498913818314846}
+  - {fileID: -28690165181021756}
+  - {fileID: 4936502333927778256}
+  - {fileID: 7654205451546814446}
+  - {fileID: 4366883450744305107}
+  - {fileID: -2499196655663516316}
+  - {fileID: 4736693796524293539}
+  - {fileID: 3266252879945569540}
+  - {fileID: 7746765593668663320}
+  - {fileID: -2472005712271416613}
+  - {fileID: 4389978164307578484}
+  - {fileID: -2641185324236434089}
+  - {fileID: -2301436327879438984}
+  - {fileID: 3737762135818084149}
+  - {fileID: -600447076895368912}
+  - {fileID: 6686841156459299747}
   m_renderMode: 1
   m_latencyOptimization: 0
   m_autoColorSubmissionMode: 1
@@ -212,7 +212,7 @@ MonoBehaviour:
   m_symmetricProjection: 0
   m_optimizeMultiviewRenderRegions: 0
   m_multiviewRenderRegionsOptimizationMode: 0
-  m_hasMigratedMultiviewRenderRegionSetting: 0
+  m_hasMigratedMultiviewRenderRegionSetting: 1
   m_foveatedRenderingApi: 0
 --- !u!114 &-7431082634684396489
 MonoBehaviour:
@@ -271,6 +271,26 @@ MonoBehaviour:
   version: 0.0.1
   featureIdInternal: com.unity.openxr.feature.conformance
   openxrExtensionStrings: XR_EXT_conformance_automation
+  company: Unity
+  priority: 0
+  required: 0
+--- !u!114 &-6453580530708914258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b213d3e3c7f3109449eb46a4c8ee42f0, type: 3}
+  m_Name: XrPerformanceSettingsFeature iPhone
+  m_EditorClassIdentifier: 
+  m_enabled: 0
+  nameUi: XR Performance Settings
+  version: 1.0.0
+  featureIdInternal: com.unity.openxr.feature.extension.performance_settings
+  openxrExtensionStrings: XR_EXT_performance_settings
   company: Unity
   priority: 0
   required: 0
@@ -742,11 +762,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f0ebc320a151d3408ea1e9fce54d40e, type: 3}
   m_Name: OpenXR Package Settings
   m_EditorClassIdentifier: 
-  Keys: 07000000010000000d000000
+  Keys: 07000000010000000d00000004000000
   Values:
   - {fileID: -7477292087284442622}
   - {fileID: 5558276287825485362}
   - {fileID: 4363529058765335651}
+  - {fileID: 960501780838536435}
 --- !u!114 &489614780411269433
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -787,6 +808,33 @@ MonoBehaviour:
   company: Unity
   priority: 0
   required: 0
+--- !u!114 &960501780838536435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5a1f07dc5afe854f9f12a4194aca3fb, type: 3}
+  m_Name: iPhone
+  m_EditorClassIdentifier: 
+  features:
+  - {fileID: -6453580530708914258}
+  m_renderMode: 1
+  m_latencyOptimization: 0
+  m_autoColorSubmissionMode: 1
+  m_colorSubmissionModes:
+    m_List: 00000000
+  m_depthSubmissionMode: 0
+  m_spacewarpMotionVectorTextureFormat: 0
+  m_optimizeBufferDiscards: 0
+  m_symmetricProjection: 0
+  m_optimizeMultiviewRenderRegions: 0
+  m_multiviewRenderRegionsOptimizationMode: 0
+  m_hasMigratedMultiviewRenderRegionSetting: 1
+  m_foveatedRenderingApi: 0
 --- !u!114 &1611468827637992030
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -932,7 +980,7 @@ MonoBehaviour:
   m_symmetricProjection: 0
   m_optimizeMultiviewRenderRegions: 0
   m_multiviewRenderRegionsOptimizationMode: 0
-  m_hasMigratedMultiviewRenderRegionSetting: 0
+  m_hasMigratedMultiviewRenderRegionSetting: 1
   m_foveatedRenderingApi: 0
 --- !u!114 &4366883450744305107
 MonoBehaviour:
@@ -1040,7 +1088,7 @@ MonoBehaviour:
   lateLatchingDebug: 0
   optimizeMultiviewRenderRegions: 0
   multiviewRenderRegionsOptimizationMode: 0
-  m_hasMigratedMultiviewRenderRegions: 0
+  m_hasMigratedMultiviewRenderRegions: 1
   spacewarpMotionVectorTextureFormat: 0
 --- !u!114 &4936502333927778256
 MonoBehaviour:
@@ -1187,7 +1235,7 @@ MonoBehaviour:
   m_symmetricProjection: 0
   m_optimizeMultiviewRenderRegions: 0
   m_multiviewRenderRegionsOptimizationMode: 0
-  m_hasMigratedMultiviewRenderRegionSetting: 0
+  m_hasMigratedMultiviewRenderRegionSetting: 1
   m_foveatedRenderingApi: 0
 --- !u!114 &5698413365116838199
 MonoBehaviour:
