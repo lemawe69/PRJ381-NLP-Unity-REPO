@@ -3,28 +3,42 @@ using System.Collections;
 using UnityEngine.XR;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class AudioRecorder : MonoBehaviour
 {
     public AudioSource audioFeedback;
     public WhisperAPI whisperAPI;
+    public Button recordButton; // Assign in the inspector
+    public Image recordingPanel; // Assign a panel in the inspector
 
     private AudioClip recording;
     private bool isRecording = false;
     private UnityEngine.XR.InputDevice leftController;
-    private bool buttonPressedLastFrame = false;
+    public bool buttonPressedLastFrame = false;
 
     private Keyboard keyboard;
+    private string currentDeviceName; // Track the microphone device
 
     private float lastCommandTime;
     private const float MIN_COMMAND_INTERVAL = 3f;
-
-    //byte[] audioData = WavConverter.ConvertToWav(recording);
 
     void Start()
     {
         InitializeController();
         keyboard = Keyboard.current;
+        
+        // Set up the button click listener if a button is assigned
+        if (recordButton != null)
+        {
+            recordButton.onClick.AddListener(ToggleRecording);
+        }
+        
+        // Initialize panel color
+        if (recordingPanel != null)
+        {
+            recordingPanel.color = Color.white;
+        }
     }
 
     void Update()
@@ -36,7 +50,7 @@ public class AudioRecorder : MonoBehaviour
         //     if (!leftController.isValid) return;
         // }
 
-        // Check for button press
+        // Check for controller button press
         if (leftController.TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out bool pressed) && pressed)
         {
             if (!buttonPressedLastFrame && !isRecording)
@@ -54,7 +68,7 @@ public class AudioRecorder : MonoBehaviour
             }
         }
 
-        // test without vr headset code
+        // Test without VR headset code
         #if UNITY_EDITOR
         if (keyboard != null)
         {
@@ -68,7 +82,20 @@ public class AudioRecorder : MonoBehaviour
                 StopRecording();
             }
         }
-    #endif
+        #endif
+    }
+
+    // Public method for UI button to toggle recording
+    public void ToggleRecording()
+    {
+        if (isRecording)
+        {
+            StopRecording();
+        }
+        else
+        {
+            StartRecording();
+        }
     }
 
     void InitializeController()
@@ -89,42 +116,69 @@ public class AudioRecorder : MonoBehaviour
 
     void StartRecording()
     {
-
         // Get all available microphones
         string[] devices = Microphone.devices;
+        if (devices.Length == 0)
+        {
+            Debug.LogError("No microphone devices found!");
+            return;
+        }
+
+        // Log available devices for debugging
         Debug.Log("Available microphones:");
         foreach (string device in devices)
         {
             Debug.Log(device);
         }
-    
-        // Use the first headset microphone (if available)
-        string selectedDevice = null;
+
+        // Prefer Meta Quest's built-in microphone
+        currentDeviceName = null;
         foreach (string device in devices)
         {
-            if (device.ToLower().Contains("headset") || 
-                device.ToLower().Contains("earbud") ||
-                device.ToLower().Contains("airpod"))
+            if (device.ToLower().Contains("oculus") || 
+                device.ToLower().Contains("quest") ||
+                device.ToLower().Contains("headset"))
             {
-                selectedDevice = device;
+                currentDeviceName = device;
                 break;
             }
         }
-    
-        // Start recording
-        Debug.Log("Starting recording...");
-        //recording = Microphone.Start(null, false, 5, 16000);
-        recording = Microphone.Start(selectedDevice, false, 10, 44100);
+
+        // Fallback to the first available device
+        if (string.IsNullOrEmpty(currentDeviceName))
+        {
+            currentDeviceName = devices[0];
+        }
+
+        Debug.Log($"Using microphone: {currentDeviceName}");
+
+        // Start recording with the selected device
+        recording = Microphone.Start(currentDeviceName, false, 10, 44100);
         isRecording = true;
         if (audioFeedback != null) audioFeedback.Play();
+
+        // Update panel color
+        UpdatePanelColor();
     }
 
     void StopRecording()
     {
-        Debug.Log("Stopping recording...");
-        Microphone.End(null);
+        if (!isRecording) return;
+
+        Microphone.End(currentDeviceName);
         isRecording = false;
         StartCoroutine(ProcessVoiceCommand());
+
+        // Update panel color
+        UpdatePanelColor();
+    }
+    
+    void UpdatePanelColor()
+    {
+        if (recordingPanel != null)
+        {
+            recordingPanel.color = isRecording ? Color.red : Color.white;
+        }
     }
 
     IEnumerator ProcessVoiceCommand()
@@ -168,23 +222,12 @@ public class AudioRecorder : MonoBehaviour
         if (!string.IsNullOrEmpty(transcript))
         {
             Debug.Log($"Transcribed: {transcript}");
-            CommandParser.ExecuteCommand(transcript);
-        }
-
-        if (!string.IsNullOrEmpty(transcript))
-        {
-            Debug.Log($"Transcribed: {transcript}");
+            lastCommandTime = Time.time;
             CommandParser.ExecuteCommand(transcript);
         }
         else
         {
             Debug.LogWarning("Transcription failed or returned empty");
-        }
-
-        if (!string.IsNullOrEmpty(transcript))
-        {
-            lastCommandTime = Time.time;
-            CommandParser.ExecuteCommand(transcript);
         }
     }
 
