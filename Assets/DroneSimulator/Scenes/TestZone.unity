@@ -1501,7 +1501,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9191f64b686c8bd4784da2647a20a605, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coordinates: {fileID: 916125175}
 --- !u!114 &1203117320
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1514,8 +1513,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27253ad290953174dbae847507072c15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  latitude: 0
-  longitude: 0
 --- !u!4 &1203117321
 Transform:
   m_ObjectHideFlags: 0
@@ -1816,8 +1813,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1350444986}
   - component: {fileID: 1350444985}
-  - component: {fileID: 1350444987}
   - component: {fileID: 1350444988}
+  - component: {fileID: 1350444987}
   m_Layer: 0
   m_Name: TelloController
   m_TagString: Untagged
@@ -1837,7 +1834,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 102ff56c81097154bbcd7854824d68ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 3
+  moveSpeed: 0.001
   liftSpeed: 2
   rotationSpeed: 60
   takeOffHeight: 2
@@ -1859,7 +1856,28 @@ Transform:
   - {fileID: 595358783}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &1350444987
+--- !u!65 &1350444987
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1350444984}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &1350444988
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1883,32 +1901,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 1
---- !u!136 &1350444988
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1350444984}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 1
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_CollisionDetection: 0
 --- !u!1 &1380020331
 GameObject:
   m_ObjectHideFlags: 0

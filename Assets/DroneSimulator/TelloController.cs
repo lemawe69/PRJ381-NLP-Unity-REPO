@@ -1,18 +1,20 @@
 using UnityEngine;
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
 public class TelloController : MonoBehaviour
 {
     [Header("Drone Settings")]
-    public float moveSpeed = 3f;
-    public float liftSpeed = 2f;
+    public float moveSpeed = 1f;        // meters per second
+    public float liftSpeed = 1f;
     public float rotationSpeed = 60f;
     public float takeOffHeight = 2f;
-    public float defaultMoveDistance = 1f; // fallback if no distance is specified
+    public float defaultMoveDistance = 1f; // fallback if no distance
 
     private Rigidbody rb;
     private bool isFlying = false;
     private bool isEmergencyStopped = false;
+    private Coroutine moveRoutine;
 
     private void Awake()
     {
@@ -24,13 +26,12 @@ public class TelloController : MonoBehaviour
     {
         if (isFlying && !isEmergencyStopped)
         {
-            // Basic hover simulation
-            rb.linearVelocity = Vector3.zero;
+            // Keep stable orientation
             rb.angularVelocity = Vector3.zero;
         }
     }
 
-    // --- Command Methods ---
+    // === Command Methods ===
     public void TakeOff()
     {
         Debug.Log("Drone taking off...");
@@ -56,43 +57,46 @@ public class TelloController : MonoBehaviour
         isEmergencyStopped = true;
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
+
+        if (moveRoutine != null)
+            StopCoroutine(moveRoutine);
     }
 
     public void Move(string direction, float distance)
     {
-        if (isEmergencyStopped) return;
+        if (isEmergencyStopped || !isFlying) return;
 
-        Vector3 moveDir = DirectionToVector(direction);
-        Vector3 move = moveDir * distance;
-        rb.MovePosition(rb.position + move);
+        if (moveRoutine != null)
+            StopCoroutine(moveRoutine);
+
+        Vector3 moveDir = DirectionToVector(direction).normalized;
+        Vector3 target = rb.position + moveDir * distance;
+
+        moveRoutine = StartCoroutine(MoveToTarget(target));
         Debug.Log($"Drone moving {direction} by {distance} meters");
     }
 
     public void Rotate(string direction, int degrees)
     {
-        if (isEmergencyStopped) return;
+        if (isEmergencyStopped || !isFlying) return;
 
-        float dir = direction == "cw" ? 1f : -1f;
-        rb.MoveRotation(rb.rotation * Quaternion.Euler(0f, degrees * dir, 0f));
-        Debug.Log($"Drone rotating {direction} {degrees}�");
+        StartCoroutine(RotateSmooth(direction, degrees));
     }
 
     public void Flip(string direction)
     {
-        if (isEmergencyStopped) return;
-
+        if (isEmergencyStopped || !isFlying) return;
         Debug.Log($"Drone flipping {direction} (simulated)");
-        // Simple flip animation using rotation
         StartCoroutine(DoFlip(direction));
     }
 
     public void SetSpeed(int speed)
     {
-        moveSpeed = Mathf.Clamp(speed / 50f, 0.5f, 10f);
+        moveSpeed = Mathf.Clamp(speed / 50f, 0.5f, 5f);
         Debug.Log($"Drone speed set to {speed} (scaled: {moveSpeed})");
     }
 
-    // --- Helpers ---
+    // === Helpers ===
     private Vector3 DirectionToVector(string dir)
     {
         switch (dir)
@@ -107,7 +111,18 @@ public class TelloController : MonoBehaviour
         }
     }
 
-    private System.Collections.IEnumerator LerpToHeight(Vector3 target, float speed)
+    private IEnumerator MoveToTarget(Vector3 target)
+    {
+        while (Vector3.Distance(rb.position, target) > 0.05f && !isEmergencyStopped)
+        {
+            Vector3 newPos = Vector3.MoveTowards(rb.position, target, moveSpeed * Time.fixedDeltaTime);
+            rb.MovePosition(newPos);
+            yield return new WaitForFixedUpdate();
+        }
+        Debug.Log("Drone reached target, now hovering.");
+    }
+
+    private IEnumerator LerpToHeight(Vector3 target, float speed)
     {
         while (Vector3.Distance(transform.position, target) > 0.05f)
         {
@@ -118,25 +133,38 @@ public class TelloController : MonoBehaviour
         Debug.Log("Drone reached takeoff height, now hovering.");
     }
 
-    private System.Collections.IEnumerator DoFlip(string direction)
+    private IEnumerator RotateSmooth(string direction, int degrees)
+    {
+        float dir = direction == "cw" ? 1f : -1f;
+        float rotated = 0f;
+        while (rotated < degrees)
+        {
+            float step = rotationSpeed * Time.deltaTime;
+            rb.MoveRotation(rb.rotation * Quaternion.Euler(0f, dir * step, 0f));
+            rotated += step;
+            yield return null;
+        }
+        Debug.Log($"Drone rotation {direction} complete.");
+    }
+
+    private IEnumerator DoFlip(string direction)
     {
         float flipAngle = 360f;
         Vector3 axis = Vector3.forward;
 
-        if (direction == "f") axis = transform.right;      // front flip
-        else if (direction == "b") axis = -transform.right; // back flip
-        else if (direction == "l") axis = transform.forward; // left roll
-        else if (direction == "r") axis = -transform.forward; // right roll
+        if (direction == "f") axis = transform.right;
+        else if (direction == "b") axis = -transform.right;
+        else if (direction == "l") axis = transform.forward;
+        else if (direction == "r") axis = -transform.forward;
 
         float rotated = 0f;
         while (rotated < flipAngle)
         {
-            float step = 720f * Time.deltaTime; // flip speed
+            float step = 720f * Time.deltaTime;
             rb.MoveRotation(rb.rotation * Quaternion.Euler(axis * step));
             rotated += step;
             yield return null;
         }
-
         Debug.Log("Flip complete!");
     }
 }
