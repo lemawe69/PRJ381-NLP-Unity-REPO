@@ -1,10 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SignalByManualDistance : MonoBehaviour
+public class SignalByDroneMesh : MonoBehaviour
 {
-    [Header("Manual Distance Input")]
-    public float distance = 0f;
+    [Header("Drone Mesh Reference")]
+    public Transform droneMesh; // Assign the actual mesh object of the drone
 
     [Header("Signal Thresholds")]
     public float fullSignalRange = 20f;
@@ -18,6 +18,8 @@ public class SignalByManualDistance : MonoBehaviour
 
     void Update()
     {
+        // Use the drone mesh's world position
+        float distance = droneMesh.position.magnitude; // Distance from world origin (0,0,0)
         UpdateSignalIcon(distance);
     }
 
