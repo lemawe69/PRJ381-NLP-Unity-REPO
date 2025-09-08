@@ -15,7 +15,7 @@ public class WeatherManager : MonoBehaviour
 
     void Start()
     {
-        // Hardcoded coordinates for Tshwane, South Africa
+        // Coordinates for Tshwane, South Africa
         float latitude = -25.7479f;
         float longitude = 28.2293f;
         StartCoroutine(GetWeather(latitude, longitude));
