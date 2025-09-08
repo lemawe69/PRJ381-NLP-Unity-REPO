@@ -13,9 +13,9 @@ public class Map : MonoBehaviour
     public int zoom = 12;
 
     public enum resolution { low = 1, high = 2 };
-    public resolution mapResolution = resolution.high; // ✅ Use high resolution for better quality
+    public resolution mapResolution = resolution.high; //Use high resolution for better quality
 
-    public enum type { roadmap, satellite, hybrid, terrain }; // ✅ Fixed typo: "gybrid" → "hybrid"
+    public enum type { roadmap, satellite, hybrid, terrain }; //Fixed typo: "gybrid" → "hybrid"
     public type mapType = type.hybrid;
 
     private string url = "";
@@ -61,7 +61,7 @@ public class Map : MonoBehaviour
     IEnumerator GetGoogleMap()
     {
         url = $"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lon}&zoom={zoom}&size={mapWidth}x{mapHeight}&scale={(int)mapResolution}&maptype={mapType}&key={apiKey}";
-        Debug.Log("Map URL: " + url); // ✅ Optional: helps debug malformed requests
+        Debug.Log("Map URL: " + url); //Optional: helps debug malformed requests
 
         mapIsLoading = true;
         UnityWebRequest www = UnityWebRequestTexture.GetTexture(url);
