@@ -623,27 +623,21 @@ namespace Unity.VisualScripting.Generated.Aot
 	// DroneUIMobilePreview.op_Implicit
 	// DroneUIMobilePreview.op_Equality
 	// DroneUIMobilePreview.op_Inequality
-	// TelemetryDisplay.op_Implicit
-	// TelemetryDisplay.op_Equality
-	// TelemetryDisplay.op_Inequality
 	// DroneCameraFeed.op_Implicit
 	// DroneCameraFeed.op_Equality
 	// DroneCameraFeed.op_Inequality
 	// BatteryDisplay.op_Implicit
 	// BatteryDisplay.op_Equality
 	// BatteryDisplay.op_Inequality
-	// GPS.op_Implicit
-	// GPS.op_Equality
-	// GPS.op_Inequality
+	// Map.op_Implicit
+	// Map.op_Equality
+	// Map.op_Inequality
 	// PictureButton.op_Implicit
 	// PictureButton.op_Equality
 	// PictureButton.op_Inequality
-	// SignalByManualDistance.op_Implicit
-	// SignalByManualDistance.op_Equality
-	// SignalByManualDistance.op_Inequality
-	// UpdateGPSText.op_Implicit
-	// UpdateGPSText.op_Equality
-	// UpdateGPSText.op_Inequality
+	// SignalByDroneMesh.op_Implicit
+	// SignalByDroneMesh.op_Equality
+	// SignalByDroneMesh.op_Inequality
 	// WeatherManager.op_Implicit
 	// WeatherManager.op_Equality
 	// WeatherManager.op_Inequality
@@ -8025,41 +8019,6 @@ namespace Unity.VisualScripting.Generated.Aot
 			optimized.Invoke(default(object[]));
 		}
 		
-		// TelemetryDisplay.op_Implicit
-		[global::UnityEngine.Scripting.PreserveAttribute()]
-		public static void TelemetryDisplay_op_Implicit()
-		{
-			global::UnityEngine.Object arg0 = default(global::UnityEngine.Object);
-			bool conversion = ((bool)(arg0));
-			global::Unity.VisualScripting.StaticFunctionInvoker<UnityEngine.Object, bool> optimized = new global::Unity.VisualScripting.StaticFunctionInvoker<UnityEngine.Object, bool>(default(global::System.Reflection.MethodInfo));
-			optimized.Invoke(null, arg0);
-			optimized.Invoke(default(object[]));
-		}
-		
-		// TelemetryDisplay.op_Equality
-		[global::UnityEngine.Scripting.PreserveAttribute()]
-		public static void TelemetryDisplay_op_Equality()
-		{
-			global::UnityEngine.Object arg0 = default(global::UnityEngine.Object);
-			global::UnityEngine.Object arg1 = default(global::UnityEngine.Object);
-			bool @operator = (arg0 == arg1);
-			global::Unity.VisualScripting.StaticFunctionInvoker<UnityEngine.Object, UnityEngine.Object, bool> optimized = new global::Unity.VisualScripting.StaticFunctionInvoker<UnityEngine.Object, UnityEngine.Object, bool>(default(global::System.Reflection.MethodInfo));
-			optimized.Invoke(null, arg0, arg1);
-			optimized.Invoke(default(object[]));
-		}
-		
-		// TelemetryDisplay.op_Inequality
-		[global::UnityEngine.Scripting.PreserveAttribute()]
-		public static void TelemetryDisplay_op_Inequality()
-		{
-			global::UnityEngine.Object arg0 = default(global::UnityEngine.Object);
-			global::UnityEngine.Object arg1 = default(global::UnityEngine.Object);
-			bool @operator = (arg0 != arg1);
-			global::Unity.VisualScripting.StaticFunctionInvoker<UnityEngine.Object, UnityEngine.Object, bool> optimized = new global::Unity.VisualScripting.StaticFunctionInvoker<UnityEngine.Object, UnityEngine.Object, bool>(default(global::System.Reflection.MethodInfo));
-			optimized.Invoke(null, arg0, arg1);
-			optimized.Invoke(default(object[]));
-		}
-		
 		// DroneCameraFeed.op_Implicit
 		[global::UnityEngine.Scripting.PreserveAttribute()]
 		public static void DroneCameraFeed_op_Implicit()
@@ -8130,9 +8089,9 @@ namespace Unity.VisualScripting.Generated.Aot
 			optimized.Invoke(default(object[]));
 		}
 		
-		// GPS.op_Implicit
+		// Map.op_Implicit
 		[global::UnityEngine.Scripting.PreserveAttribute()]
-		public static void GPS_op_Implicit()
+		public static void Map_op_Implicit()
 		{
 			global::UnityEngine.Object arg0 = default(global::UnityEngine.Object);
 			bool conversion = ((bool)(arg0));
@@ -8141,9 +8100,9 @@ namespace Unity.VisualScripting.Generated.Aot
 			optimized.Invoke(default(object[]));
 		}
 		
-		// GPS.op_Equality
+		// Map.op_Equality
 		[global::UnityEngine.Scripting.PreserveAttribute()]
-		public static void GPS_op_Equality()
+		public static void Map_op_Equality()
 		{
 			global::UnityEngine.Object arg0 = default(global::UnityEngine.Object);
 			global::UnityEngine.Object arg1 = default(global::UnityEngine.Object);
@@ -8153,9 +8112,9 @@ namespace Unity.VisualScripting.Generated.Aot
 			optimized.Invoke(default(object[]));
 		}
 		
-		// GPS.op_Inequality
+		// Map.op_Inequality
 		[global::UnityEngine.Scripting.PreserveAttribute()]
-		public static void GPS_op_Inequality()
+		public static void Map_op_Inequality()
 		{
 			global::UnityEngine.Object arg0 = default(global::UnityEngine.Object);
 			global::UnityEngine.Object arg1 = default(global::UnityEngine.Object);
@@ -8200,9 +8159,9 @@ namespace Unity.VisualScripting.Generated.Aot
 			optimized.Invoke(default(object[]));
 		}
 		
-		// SignalByManualDistance.op_Implicit
+		// SignalByDroneMesh.op_Implicit
 		[global::UnityEngine.Scripting.PreserveAttribute()]
-		public static void SignalByManualDistance_op_Implicit()
+		public static void SignalByDroneMesh_op_Implicit()
 		{
 			global::UnityEngine.Object arg0 = default(global::UnityEngine.Object);
 			bool conversion = ((bool)(arg0));
@@ -8211,9 +8170,9 @@ namespace Unity.VisualScripting.Generated.Aot
 			optimized.Invoke(default(object[]));
 		}
 		
-		// SignalByManualDistance.op_Equality
+		// SignalByDroneMesh.op_Equality
 		[global::UnityEngine.Scripting.PreserveAttribute()]
-		public static void SignalByManualDistance_op_Equality()
+		public static void SignalByDroneMesh_op_Equality()
 		{
 			global::UnityEngine.Object arg0 = default(global::UnityEngine.Object);
 			global::UnityEngine.Object arg1 = default(global::UnityEngine.Object);
@@ -8223,44 +8182,9 @@ namespace Unity.VisualScripting.Generated.Aot
 			optimized.Invoke(default(object[]));
 		}
 		
-		// SignalByManualDistance.op_Inequality
+		// SignalByDroneMesh.op_Inequality
 		[global::UnityEngine.Scripting.PreserveAttribute()]
-		public static void SignalByManualDistance_op_Inequality()
-		{
-			global::UnityEngine.Object arg0 = default(global::UnityEngine.Object);
-			global::UnityEngine.Object arg1 = default(global::UnityEngine.Object);
-			bool @operator = (arg0 != arg1);
-			global::Unity.VisualScripting.StaticFunctionInvoker<UnityEngine.Object, UnityEngine.Object, bool> optimized = new global::Unity.VisualScripting.StaticFunctionInvoker<UnityEngine.Object, UnityEngine.Object, bool>(default(global::System.Reflection.MethodInfo));
-			optimized.Invoke(null, arg0, arg1);
-			optimized.Invoke(default(object[]));
-		}
-		
-		// UpdateGPSText.op_Implicit
-		[global::UnityEngine.Scripting.PreserveAttribute()]
-		public static void UpdateGPSText_op_Implicit()
-		{
-			global::UnityEngine.Object arg0 = default(global::UnityEngine.Object);
-			bool conversion = ((bool)(arg0));
-			global::Unity.VisualScripting.StaticFunctionInvoker<UnityEngine.Object, bool> optimized = new global::Unity.VisualScripting.StaticFunctionInvoker<UnityEngine.Object, bool>(default(global::System.Reflection.MethodInfo));
-			optimized.Invoke(null, arg0);
-			optimized.Invoke(default(object[]));
-		}
-		
-		// UpdateGPSText.op_Equality
-		[global::UnityEngine.Scripting.PreserveAttribute()]
-		public static void UpdateGPSText_op_Equality()
-		{
-			global::UnityEngine.Object arg0 = default(global::UnityEngine.Object);
-			global::UnityEngine.Object arg1 = default(global::UnityEngine.Object);
-			bool @operator = (arg0 == arg1);
-			global::Unity.VisualScripting.StaticFunctionInvoker<UnityEngine.Object, UnityEngine.Object, bool> optimized = new global::Unity.VisualScripting.StaticFunctionInvoker<UnityEngine.Object, UnityEngine.Object, bool>(default(global::System.Reflection.MethodInfo));
-			optimized.Invoke(null, arg0, arg1);
-			optimized.Invoke(default(object[]));
-		}
-		
-		// UpdateGPSText.op_Inequality
-		[global::UnityEngine.Scripting.PreserveAttribute()]
-		public static void UpdateGPSText_op_Inequality()
+		public static void SignalByDroneMesh_op_Inequality()
 		{
 			global::UnityEngine.Object arg0 = default(global::UnityEngine.Object);
 			global::UnityEngine.Object arg1 = default(global::UnityEngine.Object);
