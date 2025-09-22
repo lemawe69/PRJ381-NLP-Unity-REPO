@@ -1,9 +1,10 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.XR;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using TMPro; // Added for TextMeshPro support
 
 public class AudioRecorder : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class AudioRecorder : MonoBehaviour
     public WhisperAPI whisperAPI;
     public Button recordButton; // Assign in the inspector
     public Image recordingPanel; // Assign a panel in the inspector
+    public TMP_Text commandTextUI; // Assign in the inspector
 
     private AudioClip recording;
     private bool isRecording = false;
@@ -27,14 +29,12 @@ public class AudioRecorder : MonoBehaviour
     {
         InitializeController();
         keyboard = Keyboard.current;
-        
-        // Set up the button click listener if a button is assigned
+
         if (recordButton != null)
         {
             recordButton.onClick.AddListener(ToggleRecording);
         }
-        
-        // Initialize panel color
+
         if (recordingPanel != null)
         {
             recordingPanel.color = Color.white;
@@ -43,14 +43,6 @@ public class AudioRecorder : MonoBehaviour
 
     void Update()
     {
-        // Try to initialize if not valid
-        // if (!leftController.isValid)
-        // {
-        //     InitializeController();
-        //     if (!leftController.isValid) return;
-        // }
-
-        // Check for controller button press
         if (leftController.TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out bool pressed) && pressed)
         {
             if (!buttonPressedLastFrame && !isRecording)
@@ -68,8 +60,7 @@ public class AudioRecorder : MonoBehaviour
             }
         }
 
-        // Test without VR headset code
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         if (keyboard != null)
         {
             if (keyboard.spaceKey.wasPressedThisFrame && !isRecording)
@@ -82,10 +73,9 @@ public class AudioRecorder : MonoBehaviour
                 StopRecording();
             }
         }
-        #endif
+#endif
     }
 
-    // Public method for UI button to toggle recording
     public void ToggleRecording()
     {
         if (isRecording)
@@ -116,7 +106,6 @@ public class AudioRecorder : MonoBehaviour
 
     void StartRecording()
     {
-        // Get all available microphones
         string[] devices = Microphone.devices;
         if (devices.Length == 0)
         {
@@ -124,18 +113,16 @@ public class AudioRecorder : MonoBehaviour
             return;
         }
 
-        // Log available devices for debugging
         Debug.Log("Available microphones:");
         foreach (string device in devices)
         {
             Debug.Log(device);
         }
 
-        // Prefer Meta Quest's built-in microphone
         currentDeviceName = null;
         foreach (string device in devices)
         {
-            if (device.ToLower().Contains("oculus") || 
+            if (device.ToLower().Contains("oculus") ||
                 device.ToLower().Contains("quest") ||
                 device.ToLower().Contains("headset"))
             {
@@ -144,7 +131,6 @@ public class AudioRecorder : MonoBehaviour
             }
         }
 
-        // Fallback to the first available device
         if (string.IsNullOrEmpty(currentDeviceName))
         {
             currentDeviceName = devices[0];
@@ -152,12 +138,10 @@ public class AudioRecorder : MonoBehaviour
 
         Debug.Log($"Using microphone: {currentDeviceName}");
 
-        // Start recording with the selected device
         recording = Microphone.Start(currentDeviceName, false, 10, 44100);
         isRecording = true;
         if (audioFeedback != null) audioFeedback.Play();
 
-        // Update panel color
         UpdatePanelColor();
     }
 
@@ -169,10 +153,9 @@ public class AudioRecorder : MonoBehaviour
         isRecording = false;
         StartCoroutine(ProcessVoiceCommand());
 
-        // Update panel color
         UpdatePanelColor();
     }
-    
+
     void UpdatePanelColor()
     {
         if (recordingPanel != null)
@@ -183,7 +166,6 @@ public class AudioRecorder : MonoBehaviour
 
     IEnumerator ProcessVoiceCommand()
     {
-        // Prevent too frequent commands
         if (Time.time - lastCommandTime < MIN_COMMAND_INTERVAL)
         {
             Debug.Log("Command throttled");
@@ -209,6 +191,7 @@ public class AudioRecorder : MonoBehaviour
         if (!string.IsNullOrEmpty(quickCommand))
         {
             Debug.Log($"Offline command: {quickCommand}");
+            ShowCommandText(quickCommand); // Display offline command
             CommandParser.ExecuteCommand(quickCommand);
             yield break;
         }
@@ -222,6 +205,7 @@ public class AudioRecorder : MonoBehaviour
         if (!string.IsNullOrEmpty(transcript))
         {
             Debug.Log($"Transcribed: {transcript}");
+            ShowCommandText(transcript); // Display transcribed command
             lastCommandTime = Time.time;
             CommandParser.ExecuteCommand(transcript);
         }
@@ -235,11 +219,9 @@ public class AudioRecorder : MonoBehaviour
     {
         try
         {
-            // Simple energy-based detection
             float energy = CalculateAudioEnergy(audioData);
-            if (energy < 0.1f) return null; // Too quiet
+            if (energy < 0.1f) return null;
 
-            // Try recognizing short commands
             string[] commands = { "take off", "land", "stop", "up", "down", "left", "right" };
             foreach (string cmd in commands)
             {
@@ -253,15 +235,31 @@ public class AudioRecorder : MonoBehaviour
         catch { }
         return null;
     }
-    
+
     private float CalculateAudioEnergy(byte[] audio)
     {
         float sum = 0;
         for (int i = 0; i < audio.Length; i += 2)
         {
-            short sample = (short)((audio[i+1] << 8) | audio[i]);
+            short sample = (short)((audio[i + 1] << 8) | audio[i]);
             sum += Mathf.Abs(sample / 32768f);
         }
         return sum / (audio.Length / 2);
+    }
+
+    private void ShowCommandText(string command)
+    {
+        if (commandTextUI != null)
+        {
+            commandTextUI.text = $"Command: {command}";
+            StartCoroutine(ClearCommandText(4f));
+        }
+    }
+
+    private IEnumerator ClearCommandText(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (commandTextUI != null)
+            commandTextUI.text = "";
     }
 }
