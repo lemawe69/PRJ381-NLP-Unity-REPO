@@ -2,7 +2,7 @@
 
 ![Drone Animation](https://img.icons8.com/color/96/000000/drone.png)
 
-These scripts enable voice-controlled drone commands using natural language processing, allowing intuitive control through commands like "take off", "move left 50", or complex compound instructions.
+This project is a Unity-based drone simulator that enables intuitive, voice-controlled operation of a virtual drone using natural language processing (NLP).
 
 ## ✨ Key Features
 - 🎙️ Natural voice command recognition
