@@ -92,7 +92,7 @@ public class TelloController : MonoBehaviour
 
     public void SetSpeed(int speed)
     {
-        moveSpeed = Mathf.Clamp(speed / 50f, 0.5f, 5f);
+        moveSpeed = Mathf.Clamp(speed, 0.5f, 20f);
         Debug.Log($"Drone speed set to {speed} (scaled: {moveSpeed})");
     }
 
