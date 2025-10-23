@@ -10,9 +10,12 @@ public static class CommandParser
     private const int DefaultDistance = 50; // Default distance in cm
     private const int DefaultRotation = 90; // Default rotation in degrees
 
+    [SerializeField] static ShowingCommands showingCommands;
+
     static CommandParser()
     {
         tello = GameObject.FindObjectOfType<TelloController>();
+        showingCommands = GameObject.FindObjectOfType<ShowingCommands>();
     }
 
     private static Dictionary<string, Action> commandCache = new Dictionary<string, Action>()
@@ -32,10 +35,13 @@ public static class CommandParser
 
     public static void ExecuteCommand(string command)
     {
+
         if (tello == null) return;
 
         command = command.ToLower().Trim();
         Debug.Log($"Executing: {command}");
+
+        showingCommands.displayCommand($"Executing: {command}");
 
         if (commandCache.ContainsKey(command))
         {
