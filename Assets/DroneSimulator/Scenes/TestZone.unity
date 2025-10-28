@@ -3020,7 +3020,7 @@ GameObject:
   - component: {fileID: 1992985783}
   - component: {fileID: 1992985782}
   m_Layer: 0
-  m_Name: ThirdPersonCamera
+  m_Name: MainCamera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3124,7 +3124,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.01
   far clip plane: 1000
   field of view: 60
   orthographic: 0
@@ -3214,6 +3214,7 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1992985786}
   - {fileID: 1350444986}
   - {fileID: 1380020335}
   - {fileID: 1554532000}
@@ -3225,4 +3226,3 @@ SceneRoots:
   - {fileID: 499889691}
   - {fileID: 815621493}
   - {fileID: 270365082}
-  - {fileID: 1992985786}
